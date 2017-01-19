@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from base64 import b64decode
 
 try:  # py26
@@ -26,11 +27,11 @@ class SSOTestCase(unittest.TestCase):
         self.payload = 'bm9uY2U9Y2I2ODI1MWVlZmI1MjExZTU4YzAwZmYxMzk1ZjBjMGI%3D%0A'
         self.signature = '2828aa29899722b35a2f191d34ef9b3ce695e0e6eeec47deb46d588d70c7cb56'
 
-        self.name = u'sam'
-        self.username = u'samsam'
-        self.external_id = u'hello123'
-        self.email = u'test@test.com'
-        self.redirect_url = u'/session/sso_login?sso=bm9uY2U9Y2I2ODI1MWVlZmI1MjExZTU4YzAwZmYxMzk1ZjBjMGImbmFtZT1z%0AYW0mdXNlcm5hbWU9c2Ftc2FtJmVtYWlsPXRlc3QlNDB0ZXN0LmNvbSZleHRl%0Acm5hbF9pZD1oZWxsbzEyMw%3D%3D%0A&sig=1c884222282f3feacd76802a9dd94e8bc8deba5d619b292bed75d63eb3152c0b'
+        self.name = 'sam'
+        self.username = 'samsam'
+        self.external_id = 'hello123'
+        self.email = 'test@test.com'
+        self.redirect_url = '/session/sso_login?sso=bm9uY2U9Y2I2ODI1MWVlZmI1MjExZTU4YzAwZmYxMzk1ZjBjMGImbmFtZT1z%0AYW0mdXNlcm5hbWU9c2Ftc2FtJmVtYWlsPXRlc3QlNDB0ZXN0LmNvbSZleHRl%0Acm5hbF9pZD1oZWxsbzEyMw%3D%3D%0A&sig=1c884222282f3feacd76802a9dd94e8bc8deba5d619b292bed75d63eb3152c0b'
 
     def test_missing_args(self):
         with self.assertRaises(DiscourseError):
