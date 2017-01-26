@@ -273,7 +273,7 @@ class DiscourseClient(object):
         Returns:
 
         """
-        return self._put('/users/{0}'.format(username), **kwargs)
+        return self._put('/users/{0}'.format(username), json=True, **kwargs)
 
     def update_username(self, username, new_username, **kwargs):
         """
@@ -858,7 +858,6 @@ class DiscourseClient(object):
         usernames = ','.join(usernames)
         return self._put("/admin/groups/{0}/members.json".format(groupid), usernames=usernames)
 
-
     def add_user_to_group(self, groupid, userid):
         """
         Add a member to a group by with user id.
@@ -904,7 +903,7 @@ class DiscourseClient(object):
         """
         return self._request(GET, path, params=kwargs)
 
-    def _put(self, path, **kwargs):
+    def _put(self, path, json=False, **kwargs):
         """
 
         Args:
@@ -914,9 +913,12 @@ class DiscourseClient(object):
         Returns:
 
         """
-        return self._request(PUT, path, data=kwargs)
+        if not json:
+            return self._request(PUT, path, data=kwargs)
+        else:
+            return self._request(PUT, path, json=kwargs)
 
-    def _post(self, path,  json=False, **kwargs):
+    def _post(self, path, json=False, **kwargs):
         """
 
         Args:
