@@ -653,7 +653,7 @@ class DiscourseClient(object):
         """
         return self._get('/categories.json', **kwargs)['category_list']['categories']
 
-    def category(self, name, parent=None, **kwargs):
+    def category(self, category_id, **kwargs):
         """
 
         Args:
@@ -664,10 +664,28 @@ class DiscourseClient(object):
         Returns:
 
         """
-        if parent:
-            name = u'{0}/{1}'.format(parent, name)
+        return self._get('/c/{}/show'.format(category_id), **kwargs)['category']
 
-        return self._get(u'/category/{0}.json'.format(name), **kwargs)
+    def update_category(self, category_id, name, color, text_color, permissions,
+                        **kwargs):
+        """
+
+        Args:
+            category_id:
+            name:
+            color:
+            text_color:
+            permissions:
+            **kwargs:
+
+        Returns:
+
+        """
+        kwargs['name'] = name
+        kwargs['color'] = color
+        kwargs['text_color'] = text_color
+        kwargs['permissions'] = permissions
+        return self._put("/categories/{}".format(category_id), json=True, **kwargs)
 
     def delete_category(self, category_id, **kwargs):
         """
