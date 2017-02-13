@@ -8,7 +8,7 @@ except ImportError:
 
 
 try:  # py3
-    from urllib.parse import unquote
+    from urllib.parse import unquote_plus
     from urllib.parse import urlparse, parse_qs
 except ImportError:
     from urlparse import urlparse, parse_qs
@@ -31,7 +31,9 @@ class SSOTestCase(unittest.TestCase):
         self.username = 'samsam'
         self.external_id = 'hello123'
         self.email = 'test@test.com'
+        self.name = 'Sam Sam'
         self.avatar_url = 'http://www.gravatar.com/avatar/56ef6e0c7fc2d68d83a6d7ab195da32c.png'
+        self.bio = 'Bio example'
         self.redirect_url = '/session/sso_login?sso=bm9uY2U9Y2I2ODI1MWVlZmI1MjExZTU4YzAwZmYxMzk1ZjBjMGImbmFtZT1z%0AYW0mdXNlcm5hbWU9c2Ftc2FtJmVtYWlsPXRlc3QlNDB0ZXN0LmNvbSZleHRl%0Acm5hbF9pZD1oZWxsbzEyMw%3D%3D%0A&sig=1c884222282f3feacd76802a9dd94e8bc8deba5d619b292bed75d63eb3152c0b'
 
     def test_missing_args(self):
@@ -59,8 +61,9 @@ class SSOTestCase(unittest.TestCase):
             email=self.email,
             external_id=self.external_id,
             username=self.username,
+            name=self.name,
             avatar_url=self.avatar_url,
-            name='sam')
+            bio=self.bio)
 
         self.assertIn('/session/sso_login', url[:20])
 
@@ -71,7 +74,7 @@ class SSOTestCase(unittest.TestCase):
 
         # check the params have all the data we expect
         payload = b64decode(payload.encode('utf-8')).decode('utf-8')
-        payload = unquote(payload)
+        payload = unquote_plus(payload)
         payload = dict((p.split('=') for p in payload.split('&')))
 
         self.assertEqual(payload, {
@@ -80,5 +83,7 @@ class SSOTestCase(unittest.TestCase):
             'external_id': self.external_id,
             'name': self.name,
             'email': self.email,
-            'avatar_url': self.avatar_url
+            'name': self.name,
+            'avatar_url': self.avatar_url,
+            'bio': self.bio
         })
