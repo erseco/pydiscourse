@@ -965,12 +965,12 @@ class DiscourseClient(object):
         """
         return self._get('/admin/color_schemes.json', **kwargs)
 
-    def create_color_scheme(self, name, enabled, colors, **kwargs):
+    def create_color_scheme(self, name, base_schema_id, colors, **kwargs):
         """
 
         Args:
             name:
-            enabled:
+            base_schema_id:
             colors:
             **kwargs:
 
@@ -978,35 +978,35 @@ class DiscourseClient(object):
 
         """
         kwargs['name'] = name
-        if bool(enabled):
-            kwargs['enabled'] = 'true'
-        else:
-            kwargs['enabled'] = 'false'
+        kwargs['base_schema_id'] = base_schema_id
         kwargs['colors'] = [{'name': name, 'hex': color}
                             for name, color in colors.items()]
         kwargs = {'color_scheme': kwargs}
         return self._post("/admin/color_schemes.json", json=True, **kwargs)
 
-    def create_site_customization(self, name, enabled, stylesheet, **kwargs):
+    def create_theme(self, name, default, color_scheme_id, theme_fields, **kwargs):
         """
 
         Args:
             name:
-            enabled:
-            stylesheet:
+            default:
+            color_scheme_id:
+            theme_fields:
             **kwargs:
 
         Returns:
 
         """
+
         kwargs['name'] = name
-        if bool(enabled):
-            kwargs['enabled'] = 'true'
+        if bool(default):
+            kwargs['default'] = 'true'
         else:
-            kwargs['enabled'] = 'false'
-        kwargs['stylesheet'] = stylesheet
-        kwargs = {'site_customization': kwargs}
-        return self._post("/admin/site_customizations", json=True, **kwargs)
+            kwargs['default'] = 'false'
+        kwargs['color_scheme_id'] = color_scheme_id
+        kwargs['theme_fields'] = theme_fields
+        kwargs = {'theme': kwargs}
+        return self._post("/admin/themes", json=True, **kwargs)['theme']
 
     def trust_level_lock(self, user_id, locked, **kwargs):
         """
