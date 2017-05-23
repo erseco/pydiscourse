@@ -501,9 +501,7 @@ class DiscourseClient(object):
         Returns:
 
         """
-        posts = self._get('/t/{0}/posts.json'.format(topic_id), **kwargs)['post_stream']['posts']
-        print(posts)
-        return posts
+        return self._get('/t/{0}/posts.json'.format(topic_id), **kwargs)['post_stream']['posts']
 
     def update_topic(self, topic_url, title, **kwargs):
         """
