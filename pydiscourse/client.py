@@ -401,16 +401,21 @@ class DiscourseClient(object):
         """
         return self._get('/hot.json', **kwargs)
 
-    def latest_topics(self, **kwargs):
+    def latest_topics(self, slug_category=None, **kwargs):
         """
 
         Args:
+            slug_category
             **kwargs:
 
         Returns:
 
         """
-        return self._get('/latest.json', **kwargs)
+        if slug_category:
+            url = '/c/{0}/l/latest.json'.format(slug_category)
+        else:
+            url = '/latest.json'
+        return self._get(url, **kwargs)['topic_list']['topics']
 
     def new_topics(self, **kwargs):
         """
@@ -496,7 +501,7 @@ class DiscourseClient(object):
         Returns:
 
         """
-        return self._get('/t/{0}/posts.json'.format(topic_id), **kwargs)
+        return self._get('/t/{0}/posts.json'.format(topic_id), **kwargs)['post_stream']['posts']
 
     def update_topic(self, topic_url, title, **kwargs):
         """
