@@ -130,22 +130,26 @@ class DiscourseClient(object):
         """
         return self._put('/admin/users/{0}/trust_level'.format(userid), level=level)
 
-    def suspend(self, userid, duration, reason):
+    def suspend(self, userid, suspend_until, reason, email_message=''):
         """
         Suspend a user's account
 
         Args:
             userid: the Discourse user ID
-            duration: the length of time in days for which a user's account
-                    should be suspended
-            reason: the reason for suspending the account
+            reason: the reason for suspending the account. Displayed on user profile page
+            suspend_until: the date and time the user will be able to log in again.
+            email_message: Optional text to include in email notifying user of suspension
 
+        Examples:
+            discourse_client.suspend(42, "3017-10-06 08:00", "Suspending user forever as they have left")
+            discourse_client.suspend(427, "2018-10-06 08:00", "Suspended for spamming", "You have been suspended for spamming. Please improve your behaviour when you are able to rejoin us on 2018-10-06 08:00")
         Returns:
             ????
 
         """
         return self._put('/admin/users/{0}/suspend'.format(userid),
-                         duration=duration, reason=reason)
+                         suspend_until=suspend_until, reason=reason,
+                         message=email_message)
 
     def unsuspend(self, userid):
         """
