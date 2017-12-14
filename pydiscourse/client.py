@@ -1234,7 +1234,7 @@ class DiscourseClient(object):
 
         json_content = 'application/json; charset=utf-8'
         content_type = response.headers['content-type']
-        if content_type != json_content:
+        if content_type not in json_content:
             # some calls return empty html documents
             if not response.content.strip():
                 return None
