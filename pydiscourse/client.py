@@ -726,8 +726,8 @@ class DiscourseClient(object):
         """
         return self._get('/c/{}/show'.format(category_id), **kwargs)['category']
 
-    def update_category(self, category_id, name, color, text_color, permissions,
-                        **kwargs):
+    def update_category(self, category_id, name, color, text_color,
+                        permissions=None, **kwargs):
         """
 
         Args:
@@ -887,6 +887,14 @@ class DiscourseClient(object):
 
         """
         return self._delete("/admin/groups/{0}.json".format(groupid))
+
+    def update_group(self, group_id, **kwargs):
+        """
+        Update group
+
+        """
+        kwargs = {'group': kwargs}
+        return self._put("/admin/groups/{}".format(group_id), json=True, **kwargs)
 
     def add_group_owner(self, groupid, username):
         """
