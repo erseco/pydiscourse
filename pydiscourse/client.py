@@ -576,6 +576,17 @@ class DiscourseClient(object):
         kwargs['post[edit_reason]'] = edit_reason
         return self._put('/posts/{0}'.format(post_id), **kwargs)
 
+    def delete_post(self, post_id):
+        """
+
+        Args:
+            post_id:
+
+        Returns:
+
+        """
+        return self._delete('/posts/{0}'.format(post_id))
+
     def topics_by(self, username, **kwargs):
         """
 
