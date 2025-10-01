@@ -96,6 +96,29 @@ Once running you can access the Discourse install at http://localhost:4000.
 
 [discoursedev]: https://github.com/discourse/discourse/blob/master/docs/VAGRANT.md "Discourse Vagrant"
 
+Releases
+========
+
+Automated publishing to PyPI via GitHub Actions has been removed.
+Maintainers can cut releases manually when needed:
+
+1. Bump the version in `src/pydiscourse/__init__.py`.
+2. Build distributions locally:
+
+   ::
+
+       make build
+
+   This produces artifacts under `dist/`.
+
+3. Optionally publish to PyPI (maintainers only):
+
+   ::
+
+       twine upload dist/*
+
+4. Create a GitHub release and tag matching the version.
+
 TODO
 ====
 
