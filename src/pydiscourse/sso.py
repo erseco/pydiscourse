@@ -1,6 +1,4 @@
-"""
-Utilities to implement Single Sign On for Discourse with a Python managed
-authentication DB
+"""Implement Single Sign On for Discourse with a Python managed auth DB.
 
 https://meta.discourse.org/t/official-single-sign-on-for-discourse/13045
 
@@ -26,77 +24,77 @@ from base64 import b64encode, b64decode
 import hmac
 import hashlib
 
-try:  # py3
-    from urllib.parse import unquote, urlencode, parse_qs
-except ImportError:
-    from urllib import unquote, urlencode
-    from urlparse import parse_qs
-
+from urllib.parse import unquote, urlencode, parse_qs
 
 from pydiscourse.exceptions import DiscourseError
 
 
 def sso_validate(payload, signature, secret):
-    """
+    """Validates SSO payload.
+
+    Args:
         payload: provided by Discourse HTTP call to your SSO endpoint as sso GET param
         signature: provided by Discourse HTTP call to your SSO endpoint as sig GET param
         secret: the secret key you entered into Discourse sso secret
 
-        return value: The nonce used by discourse to validate the redirect URL
+    return value: The nonce used by discourse to validate the redirect URL
     """
     if None in [payload, signature]:
-        raise DiscourseError('No SSO payload or signature.')
+        raise DiscourseError("No SSO payload or signature.")
 
     if not secret:
-        raise DiscourseError('Invalid secret..')
+        raise DiscourseError("Invalid secret.")
 
     payload = unquote(payload)
     if not payload:
-        raise DiscourseError('Invalid payload..')
+        raise DiscourseError("Invalid payload.")
 
-    decoded = b64decode(payload.encode('utf-8')).decode('utf-8')
-    if 'nonce' not in decoded:
-        raise DiscourseError('Invalid payload..')
+    decoded = b64decode(payload.encode("utf-8")).decode("utf-8")
+    if "nonce" not in decoded:
+        raise DiscourseError("Invalid payload.")
 
-    h = hmac.new(secret.encode('utf-8'), payload.encode('utf-8'), digestmod=hashlib.sha256)
+    h = hmac.new(
+        secret.encode("utf-8"),
+        payload.encode("utf-8"),
+        digestmod=hashlib.sha256,
+    )
     this_signature = h.hexdigest()
 
     if this_signature != signature:
-        raise DiscourseError('Payload does not match signature.')
+        raise DiscourseError("Payload does not match signature.")
 
     # Discourse returns querystring encoded value. We only need `nonce`
     qs = parse_qs(decoded)
-    return qs['nonce'][0]
+    return qs["nonce"][0]
 
 
 def sso_payload(secret, **kwargs):
-    return_payload = b64encode(urlencode(kwargs).encode('utf-8'))
-    h = hmac.new(secret.encode('utf-8'), return_payload, digestmod=hashlib.sha256)
-    query_string = urlencode({'sso': return_payload, 'sig': h.hexdigest()})
+    """Returns an encoded SSO payload"""
+    return_payload = b64encode(urlencode(kwargs).encode("utf-8"))
+    h = hmac.new(secret.encode("utf-8"), return_payload, digestmod=hashlib.sha256)
+    query_string = urlencode({"sso": return_payload, "sig": h.hexdigest()})
     return query_string
 
 
-def sso_redirect_url(nonce, secret, email, external_id, username, name, avatar_url, bio, **kwargs):
-    """
+def sso_redirect_url(nonce, secret, email, external_id, username, **kwargs):
+    """Returns the Discourse redirection URL.
+
+    Args:
         nonce: returned by sso_validate()
         secret: the secret key you entered into Discourse sso secret
         user_email: email address of the user who logged in
         user_id: the internal id of the logged in user
         user_username: username of the logged in user
-        name: full name of the logged in user
-        avatar_url: avatar url of the logged in user
-        bio: bio of the logged user
 
-        return value: URL to redirect users back to discourse, now logged in as user_username
+    return value: URL to redirect users back to discourse, now logged in as user_username
     """
-    kwargs.update({
-        'nonce': nonce,
-        'email': email,
-        'external_id': external_id,
-        'username': username,
-        'name': name,
-        'avatar_url': avatar_url,
-        'bio': bio
-    })
+    kwargs.update(
+        {
+            "nonce": nonce,
+            "email": email,
+            "external_id": external_id,
+            "username": username,
+        },
+    )
 
-    return '/session/sso_login?%s' % sso_payload(secret, **kwargs)
+    return "/session/sso_login?%s" % sso_payload(secret, **kwargs)

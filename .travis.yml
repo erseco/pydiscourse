@@ -1,9 +1,0 @@
-sudo: false
-language: python
-python:
-    - "3.4"
-    - "3.5"
-    - "pypy"
-    - "pypy3"
-
-script: python setup.py test
